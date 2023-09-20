@@ -104,7 +104,10 @@ function App() {
             <div>
               <Grid container spacing={2} className='flex justify-center '>
                 <Grid item>
-                  <Button variant='contained' color='primary'>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => navigate("/gallery")}>
                     See My Photos
                   </Button>
                 </Grid>
