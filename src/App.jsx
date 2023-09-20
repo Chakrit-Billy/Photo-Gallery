@@ -1,6 +1,5 @@
-/* eslint-disable react/no-unescaped-entities */
-import { useState } from "react";
-import AppBar from "@mui/material/AppBar";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -8,24 +7,22 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CardPopup from "./CardPopup.jsx";
-import { useEffect } from "react";
+import MyAppBar from "./MyAppBar";
 import { useNavigate } from "react-router";
 import Footer from "./Footer.jsx";
 import { supabase } from "../utils/db.js";
 
 function App() {
   const navigate = useNavigate();
-  const userid = 1;
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
   const [i, seti] = useState(0);
+
   const itemsPerPage = 6;
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -35,6 +32,7 @@ function App() {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
   const handleViewCard = (card, i) => {
     setSelectedCard(card);
     seti(i);
@@ -44,12 +42,16 @@ function App() {
     setSelectedCard(null);
   };
 
+  const handleEditCard = (card) => {
+    navigate(`/edit/${card.photoid}`);
+  };
+
   const getDatabase = async () => {
     try {
       const { data, error } = await supabase
         .from("Photo")
-        .select("*")
-        .eq("userid", userid);
+        .select("*,user(*)")
+        .eq("user.auth_id", localStorage.getItem("id"));
 
       if (error) {
         console.error("Supabase error:", error);
@@ -61,22 +63,29 @@ function App() {
     }
   };
 
+  const handleDelete = async (card) => {
+    console.log(card);
+
+    const { error } = await supabase
+      .from("Photo")
+      .delete()
+      .eq("photoid", card.photoid);
+    if (error) {
+      console.log(error);
+    }
+    getDatabase();
+  };
   useEffect(() => {
     getDatabase();
   }, []);
+
   return (
     <>
       <CssBaseline />
-      <AppBar position='relative'>
-        <Toolbar>
-          <PhotoCamera className='mr-[20px]' />
-          <Typography variant='h6' gutterBottom>
-            Photo Album
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <MyAppBar />
+
       <main className='bg-gray-100'>
-        <div className=' py-8 px-0 pb-6 className="flex justify-center"'>
+        <div className='py-8 px-0 pb-6'>
           <Container maxWidth='sm'>
             <Typography
               variant='h2'
@@ -90,8 +99,7 @@ function App() {
               align='center'
               color='textSecondary'
               paragraph>
-              Hello everyone, this is a photo album and I'm trying to make this
-              sentence as long as possible.
+              Capture the moments, cherish the memories
             </Typography>
             <div>
               <Grid container spacing={2} className='flex justify-center '>
@@ -116,11 +124,11 @@ function App() {
           <Grid container spacing={4}>
             {currentCards.map((card, index) => {
               return (
-                <>
-                  <Grid item key={card.photoid} xs={12} sm={6} md={4}>
+                <React.Fragment key={card.photoid}>
+                  <Grid item xs={12} sm={6} md={4}>
                     <Card className='h-[100%] flex flex-col'>
                       <CardMedia
-                        style={{ height: "200px" }} // Set the height of the image
+                        style={{ height: "200px" }}
                         image={card.imageurl}
                         title='Image Title'
                       />
@@ -135,29 +143,32 @@ function App() {
                             whiteSpace: "nowrap",
                             textOverflow: "ellipsis",
                           }}>
-                          {" "}
-                          {/* Set the maximum height for the title and hide overflow */}
                           {card.title}
                         </Typography>
                         <Typography
                           className='truncate-text'
                           style={{ maxHeight: "80px" }}>
-                          {" "}
-                          {/* Set the maximum height for the description */}
                           {card.description}
                         </Typography>
                       </CardContent>
                       <CardActions className='mt-auto'>
-                        {" "}
-                        {/* Position buttons at the bottom */}
                         <Button
                           size='small'
                           color='primary'
                           onClick={() => handleViewCard(card, index)}>
                           View
                         </Button>
-                        <Button size='small' color='primary'>
+                        <Button
+                          size='small'
+                          color='primary'
+                          onClick={() => handleEditCard(card)}>
                           Edit
+                        </Button>
+                        <Button
+                          size='small'
+                          color='primary'
+                          onClick={() => handleDelete(card)}>
+                          Delete
                         </Button>
                       </CardActions>
                     </Card>
@@ -168,7 +179,7 @@ function App() {
                     card={selectedCard}
                     cards={cards[i]}
                   />
-                </>
+                </React.Fragment>
               );
             })}
           </Grid>

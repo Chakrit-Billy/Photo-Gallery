@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { supabase } from "../utils/db.js";
+import MyAppBar from "./MyAppBar.jsx";
 function AddAlbum() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -41,6 +42,7 @@ function AddAlbum() {
         userid: 1,
       };
       console.log(submitObject);
+      console.log(err);
       const { data, error } = await supabase
         .from("Photo")
         .insert([submitObject])
@@ -64,77 +66,80 @@ function AddAlbum() {
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gray-100'>
-      <div className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-[40%]'>
-        <Typography variant='h4' style={{ marginBottom: "20px" }}>
-          Add Album
-        </Typography>
-        {isSuccess && (
-          <Alert severity='success' className='mb-4'>
-            Album added successfully!
-          </Alert>
-        )}
-        {error && (
-          <Alert severity='error' className='mb-4'>
-            {error}
-          </Alert>
-        )}
-        <form onSubmit={handleSubmit}>
-          <div className='mb-4'>
-            <TextField
-              label='Title'
-              variant='outlined'
-              fullWidth
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className='mb-4'>
-            <TextField
-              label='Description'
-              variant='outlined'
-              fullWidth
-              multiline
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </div>
-          <div className='mb-4'>
-            <input
-              type='file'
-              accept='image/*'
-              onChange={handleImageChange}
-              required
-            />
-          </div>
-          {imagePreview && (
-            <div className='mb-4 relative cursor-pointer'>
-              <img
-                src={imagePreview}
-                alt='Selected'
-                style={{ maxWidth: "100%" }}
-              />
-              <CancelIcon
-                className='absolute top-0 right-0'
-                onClick={handleCancelImage}
+    <>
+      <MyAppBar />
+      <div className='flex items-center justify-center min-h-screen bg-gray-100'>
+        <div className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-[40%]'>
+          <Typography variant='h4' style={{ marginBottom: "20px" }}>
+            Add Album
+          </Typography>
+          {isSuccess && (
+            <Alert severity='success' className='mb-4'>
+              Album added successfully!
+            </Alert>
+          )}
+          {error && (
+            <Alert severity='error' className='mb-4'>
+              {error}
+            </Alert>
+          )}
+          <form onSubmit={handleSubmit}>
+            <div className='mb-4'>
+              <TextField
+                label='Title'
+                variant='outlined'
+                fullWidth
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
               />
             </div>
-          )}
-          <div className='text-center'>
-            <Button
-              type='submit'
-              variant='contained'
-              color='primary'
-              disabled={isSubmitting}>
-              Add Album
-            </Button>
-          </div>
-        </form>
+            <div className='mb-4'>
+              <TextField
+                label='Description'
+                variant='outlined'
+                fullWidth
+                multiline
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+            <div className='mb-4'>
+              <input
+                type='file'
+                accept='image/*'
+                onChange={handleImageChange}
+                required
+              />
+            </div>
+            {imagePreview && (
+              <div className='mb-4 relative cursor-pointer'>
+                <img
+                  src={imagePreview}
+                  alt='Selected'
+                  style={{ maxWidth: "100%" }}
+                />
+                <CancelIcon
+                  className='absolute top-0 right-0'
+                  onClick={handleCancelImage}
+                />
+              </div>
+            )}
+            <div className='text-center'>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={isSubmitting}>
+                Add Album
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

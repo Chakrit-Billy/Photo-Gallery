@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { supabase } from "../utils/db.js";
+import { useNavigate } from "react-router";
 
 function Copyright(props) {
   return (
@@ -30,8 +31,6 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme({
   palette: {
     mode: "light",
@@ -45,13 +44,32 @@ const defaultTheme = createTheme({
 });
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    try {
+      const { data: session } = await supabase.auth.signInWithPassword({
+        email: data.get("email"),
+        password: data.get("password"),
+      });
+      console.log(session);
+      const { data: data2, error: err } = await supabase
+        .from("user")
+        .update({ auth_id: session.user.id })
+        .eq("email", data.get("email"))
+        .select();
+      if (err) {
+        console.log(err);
+      }
+      if (data2.length > 0) {
+        localStorage.setItem("id", session.user.id);
+
+        navigate(`/`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
