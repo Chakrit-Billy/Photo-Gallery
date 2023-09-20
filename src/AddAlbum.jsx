@@ -4,13 +4,7 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = "https://xranypgachpyeenmfzfv.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyYW55cGdhY2hweWVlbm1memZ2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY5NTEzMjU2NSwiZXhwIjoyMDEwNzA4NTY1fQ.UHmANMarnbCdVJiwYY5eQDeg1B3e3InSbVT5UG3knDI";
-const supabase = createClient(supabaseUrl, supabaseKey);
-
+import { supabase } from "../utils/db.js";
 function AddAlbum() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

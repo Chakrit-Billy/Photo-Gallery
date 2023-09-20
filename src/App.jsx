@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
@@ -7,23 +8,16 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import CardPopup from "./CardPopup.jsx";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Footer from "./Footer.jsx";
-
-import { createClient } from "@supabase/supabase-js";
-const supabaseUrl = "https://xranypgachpyeenmfzfv.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhyYW55cGdhY2hweWVlbm1memZ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTUxMzI1NjUsImV4cCI6MjAxMDcwODU2NX0.of-2CuGElVhR0AD_6y0iRhxtUCMO_dM5fHYdFUQf2FY";
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "../utils/db.js";
 
 function App() {
   const navigate = useNavigate();
@@ -38,7 +32,6 @@ function App() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Function to handle page change
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
@@ -47,7 +40,6 @@ function App() {
     seti(i);
   };
 
-  // Function to close the pop-up
   const handleClosePopup = () => {
     setSelectedCard(null);
   };
