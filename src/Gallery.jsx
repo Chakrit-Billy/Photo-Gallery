@@ -37,6 +37,7 @@ function Gallery() {
         <Typography
           variant='h4'
           align='center'
+          color='textPrimary'
           gutterBottom
           style={{ marginBottom: "30px" }}>
           Photo Gallery
