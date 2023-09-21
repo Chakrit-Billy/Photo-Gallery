@@ -52,11 +52,13 @@ function App() {
         .from("Photo")
         .select("*,user(*)")
         .eq("user.auth_id", localStorage.getItem("id"));
-
+      console.log(data, "data");
+      const data2 = data.filter((item) => item.user !== null);
+      console.log(data2, "data2");
       if (error) {
         console.error("Supabase error:", error);
       } else {
-        setCards(data);
+        setCards(data2);
       }
     } catch (e) {
       console.error("Error fetching data:", e);
@@ -70,6 +72,11 @@ function App() {
       .from("Photo")
       .delete()
       .eq("photoid", card.photoid);
+
+    const { data: imageDel, error: Error } = await supabase.storage
+      .from("PhotoImage")
+      .remove(`PhotoImage/${card.title}`);
+    console.log(imageDel);
     if (error) {
       console.log(error);
     }
@@ -79,7 +86,6 @@ function App() {
     getDatabase();
   }, []);
 
-  console.log(import.meta.env.VITE_SUPABASE_URL_KEY);
   return (
     <>
       <CssBaseline />

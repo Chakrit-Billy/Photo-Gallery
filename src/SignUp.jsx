@@ -13,10 +13,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { supabase } from "../utils/db.js";
-
+import { useNavigate } from "react-router";
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [passwordError, setPasswordError] = useState(false); // State for password error
   const [passwordErrorMsg, setPasswordErrorMsg] = useState(""); // Error message for password
 
@@ -49,10 +50,14 @@ export default function SignUp() {
     }
 
     try {
-      await supabase.auth.signUp({
+      const { data: user, error: err } = await supabase.auth.signUp({
         email: data.get("email"),
         password: data.get("password"),
       });
+      console.log(user);
+      if (!err) {
+        navigate("/");
+      }
     } catch (error) {
       console.log(error);
     }

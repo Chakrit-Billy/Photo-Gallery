@@ -17,10 +17,11 @@ function Gallery() {
           .eq("user.auth_id", localStorage.getItem("id"))
           .order("photoid", { ascending: false });
 
+        const data2 = data.filter((item) => item.user !== null);
         if (error) {
           console.error("Supabase error:", error);
         } else {
-          setImages(data);
+          setImages(data2);
         }
       } catch (e) {
         console.error("Error fetching images:", e);

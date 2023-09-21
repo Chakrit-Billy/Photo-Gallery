@@ -65,6 +65,13 @@ export default function SignInSide() {
       if (data2.length > 0) {
         localStorage.setItem("id", session.user.id);
 
+        let { data: user, error } = await supabase
+          .from("user")
+          .select("userid")
+          .eq("email", session.user.email);
+
+        console.log(user[0].userid);
+        localStorage.setItem("userid", user[0].userid);
         navigate(`/main`);
       }
     } catch (error) {

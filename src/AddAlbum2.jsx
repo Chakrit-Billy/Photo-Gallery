@@ -39,7 +39,7 @@ function AddAlbum() {
         title: `${title}`,
         description: `${description}`,
         imageurl: `${imgUrl}`,
-        userid: 1,
+        userid: localStorage.getItem("userid"),
       };
       console.log(submitObject);
       console.log(err);
