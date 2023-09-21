@@ -79,6 +79,7 @@ function App() {
     getDatabase();
   }, []);
 
+  console.log(import.meta.env.VITE_SUPABASE_URL_KEY);
   return (
     <>
       <CssBaseline />
