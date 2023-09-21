@@ -11,7 +11,7 @@ function MyAppBar() {
       <Toolbar>
         <PhotoCamera className='mr-[20px]' />
 
-        <Link to='/' style={{ textDecoration: "none", color: "inherit" }}>
+        <Link to='/main' style={{ textDecoration: "none", color: "inherit" }}>
           <Typography variant='h6' gutterBottom>
             Photo Album
           </Typography>

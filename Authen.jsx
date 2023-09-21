@@ -12,10 +12,10 @@ function Authen() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<App />} />
-        <Route path='/add' element={<AddAlbum />} />
-        <Route path='/login' element={<SignInSide />} />
         <Route path='/register' element={<SignUp />} />
+        <Route path='/main' element={<App />} />
+        <Route path='/add' element={<AddAlbum />} />
+        <Route path='/' element={<SignInSide />} />
         <Route path='/edit/:cardId' element={<EditCardPage />} />
         <Route path='/gallery' element={<Gallery />} />
       </Routes>

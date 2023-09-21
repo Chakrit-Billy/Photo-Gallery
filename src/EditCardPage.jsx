@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import MyAppBar from "./MyAppBar.jsx";
 
 function EditCardPage() {
   const { cardId } = useParams();
@@ -93,7 +94,7 @@ function EditCardPage() {
       }
 
       setIsSuccess(true);
-      navigate("/");
+      navigate("/main");
     } catch (e) {
       setError(e.message || "An error occurred");
     } finally {
@@ -102,70 +103,73 @@ function EditCardPage() {
   };
 
   return (
-    <div className='min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12'>
-      <div className='py-3 px-6 mt-4 sm:mx-auto sm:w-full sm:max-w-md'>
-        <Typography variant='h4' align='center' gutterBottom>
-          Edit Card
-        </Typography>
-        <form className='space-y-5'>
-          {imagePreview && (
-            <div className='mb-4 cursor-pointer'>
-              <img
-                src={imagePreview}
-                alt='Selected'
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
-              />
-              <Button
-                variant='outlined'
-                color='error'
-                style={{ marginTop: "10px" }}
-                onClick={handleCancelImage}>
-                Cancel Image
-              </Button>
-            </div>
-          )}
-          <TextField
-            label='Title'
-            variant='outlined'
-            fullWidth
-            value={cardData.title}
-            onChange={(e) =>
-              setCardData({ ...cardData, title: e.target.value })
-            }
-          />
-          <TextField
-            label='Description'
-            variant='outlined'
-            multiline
-            rows={4}
-            fullWidth
-            value={cardData.description}
-            onChange={(e) =>
-              setCardData({ ...cardData, description: e.target.value })
-            }
-          />
-          <input type='file' accept='image/*' onChange={handleImageChange} />
-          {isSuccess && (
-            <Alert severity='success' className='mb-4'>
-              Card edited successfully!
-            </Alert>
-          )}
-          {error && (
-            <Alert severity='error' className='mb-4'>
-              {error}
-            </Alert>
-          )}
-          <Button
-            variant='contained'
-            color='primary'
-            fullWidth
-            onClick={handleEditCard}
-            disabled={isSubmitting}>
-            Save Changes
-          </Button>
-        </form>
+    <>
+      <MyAppBar />
+      <div className='min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12'>
+        <div className='py-3 px-6 mt-4 sm:mx-auto sm:w-full sm:max-w-md'>
+          <Typography variant='h4' align='center' gutterBottom>
+            Edit Card
+          </Typography>
+          <form className='space-y-5'>
+            {imagePreview && (
+              <div className='mb-4 cursor-pointer'>
+                <img
+                  src={imagePreview}
+                  alt='Selected'
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
+                />
+                <Button
+                  variant='outlined'
+                  color='error'
+                  style={{ marginTop: "10px" }}
+                  onClick={handleCancelImage}>
+                  Cancel Image
+                </Button>
+              </div>
+            )}
+            <TextField
+              label='Title'
+              variant='outlined'
+              fullWidth
+              value={cardData.title}
+              onChange={(e) =>
+                setCardData({ ...cardData, title: e.target.value })
+              }
+            />
+            <TextField
+              label='Description'
+              variant='outlined'
+              multiline
+              rows={4}
+              fullWidth
+              value={cardData.description}
+              onChange={(e) =>
+                setCardData({ ...cardData, description: e.target.value })
+              }
+            />
+            <input type='file' accept='image/*' onChange={handleImageChange} />
+            {isSuccess && (
+              <Alert severity='success' className='mb-4'>
+                Card edited successfully!
+              </Alert>
+            )}
+            {error && (
+              <Alert severity='error' className='mb-4'>
+                {error}
+              </Alert>
+            )}
+            <Button
+              variant='contained'
+              color='primary'
+              fullWidth
+              onClick={handleEditCard}
+              disabled={isSubmitting}>
+              Save Changes
+            </Button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
