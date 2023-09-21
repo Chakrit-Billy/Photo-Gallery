@@ -6,7 +6,7 @@ function LogoutButton() {
     try {
       await supabase.auth.signOut();
       localStorage.clear();
-      window.location.href = "/login"; // Redirect to the login page
+      window.location.href = "/"; // Redirect to the login page
     } catch (error) {
       console.error("Error logging out:", error);
     }
