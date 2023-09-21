@@ -1,6 +1,6 @@
 import App from "./src/App.jsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import AddAlbum from "./src/AddAlbum.jsx";
+import AddAlbum from "./src/AddAlbum2.jsx";
 import SignInSide from "./src/SignInSide.jsx";
 import SignUp from "./src/SignUp.jsx";
 // import { useAppContext } from "./AppContext.jsx";
