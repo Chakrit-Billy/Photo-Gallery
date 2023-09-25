@@ -6,6 +6,7 @@ import SignUp from "./src/SignUp.jsx";
 // import { useAppContext } from "./AppContext.jsx";
 import EditCardPage from "./src/EditCardPage.jsx";
 import Gallery from "./src/Gallery.jsx";
+import ForgotPassword from "./src/ForgotPassword";
 function Authen() {
   //   const { isAuthentication } = useAppContext();
 
@@ -18,6 +19,7 @@ function Authen() {
         <Route path='/' element={<SignInSide />} />
         <Route path='/edit/:cardId' element={<EditCardPage />} />
         <Route path='/gallery' element={<Gallery />} />
+        <Route path='/forgot-password' element={<ForgotPassword />} />
       </Routes>
     </Router>
   );
