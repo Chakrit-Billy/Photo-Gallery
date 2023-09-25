@@ -21,7 +21,7 @@ const ResetPassword = () => {
       return;
     }
     try {
-      const { error } = await supabase.auth.api.updateUser({
+      const { error } = await supabase.auth.updateUser({
         password: newPassword,
       });
 
