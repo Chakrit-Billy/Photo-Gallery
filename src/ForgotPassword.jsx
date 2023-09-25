@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -6,10 +6,8 @@ import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { supabase } from "../utils/db.js";
-import { Link as RouterLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-// Function to generate a random temporary password
 function generateTemporaryPassword() {
   const length = 12;
   const charset =
@@ -27,7 +25,7 @@ function generateTemporaryPassword() {
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [resetMode, setResetMode] = useState(false);
@@ -48,52 +46,42 @@ export default function ForgotPassword() {
     margin: "1rem 0 2rem",
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSendResetEmail = async () => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: "http://localhost:5173/forgot-password",
+      });
+
+      if (error) {
+        setMessage("Password reset email could not be sent.");
+      } else {
+        setMessage("Password reset email sent successfully. Check your inbox.");
+        setResetMode(true); // Enable the password reset mode
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("An error occurred while processing your request.");
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (newPassword !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
 
     try {
-      if (resetMode) {
-        // Update the user's password in the database
-        const { error } = await supabase.auth.update({
-          email: email,
-          password: password,
-        });
-        console.log(error);
-        if (error) {
-          setMessage("Password reset failed. Please try again.");
-        } else {
-          setMessage(
-            "Password reset successful. You can now sign in with your new password."
-          );
-          navigate("/");
-        }
+      const { error } = await supabase.auth.api.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        setMessage("Password reset failed. Please try again.");
       } else {
-        const { data, error } = await supabase
-          .from("user")
-          .select()
-          .eq("email", email);
-
-        if (data.length === 0) {
-          setMessage("User with this email does not exist.");
-        } else {
-          // Generate a temporary password
-          const temporaryPassword = generateTemporaryPassword();
-
-          // Create a session for the user with the temporary password
-          const { session, error: sessionError } = await supabase.auth.signIn({
-            email: email,
-            password: temporaryPassword,
-          });
-
-          if (sessionError) {
-            setMessage(
-              "Unable to create a session. Temporary password is incorrect."
-            );
-          } else {
-            setMessage("Session created. You can now reset your password.");
-            setResetMode(true);
-          }
-        }
+        setMessage(
+          "Password reset successful. You can now sign in with your new password."
+        );
+        navigate("/"); // Redirect the user to the login page or any other appropriate page
       }
     } catch (error) {
       console.error(error);
@@ -109,7 +97,7 @@ export default function ForgotPassword() {
         <Typography component='h1' variant='h5'>
           {resetMode ? "Reset Password" : "Forgot Password"}
         </Typography>
-        <form style={formStyle} onSubmit={handleSubmit}>
+        <form style={formStyle} onSubmit={(e) => e.preventDefault()}>
           <TextField
             variant='outlined'
             margin='normal'
@@ -123,20 +111,20 @@ export default function ForgotPassword() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {resetMode && (
+          {resetMode ? (
             <>
               <TextField
                 variant='outlined'
                 margin='normal'
                 required
                 fullWidth
-                name='password'
+                name='newPassword'
                 label='New Password'
                 type='password'
-                id='password'
+                id='newPassword'
                 autoComplete='new-password'
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
               />
               <TextField
                 variant='outlined'
@@ -152,15 +140,28 @@ export default function ForgotPassword() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </>
+          ) : null}
+          {resetMode ? (
+            <Button
+              type='button'
+              fullWidth
+              variant='contained'
+              color='primary'
+              style={submitStyle}
+              onClick={handlePasswordReset}>
+              Reset Password
+            </Button>
+          ) : (
+            <Button
+              type='button'
+              fullWidth
+              variant='contained'
+              color='primary'
+              style={submitStyle}
+              onClick={handleSendResetEmail}>
+              Send Reset Email
+            </Button>
           )}
-          <Button
-            type='submit'
-            fullWidth
-            variant='contained'
-            color='primary'
-            style={submitStyle}>
-            {resetMode ? "Reset Password" : "Send Reset Email"}
-          </Button>
         </form>
         {message && (
           <Typography variant='body2' color='textSecondary' align='center'>
